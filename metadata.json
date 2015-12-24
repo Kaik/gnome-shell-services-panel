@@ -1,0 +1,11 @@
+{
+  "description": "Manage services from statusbar",
+  "name": "Services Panel",
+  "shell-version": [
+    "3.16",
+    "3.18"
+  ],
+  "url": "",
+  "uuid": "services-panel@kaikmedia.com",
+  "version": 0.1
+}
