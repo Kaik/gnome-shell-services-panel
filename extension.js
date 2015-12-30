@@ -1,6 +1,10 @@
 
 // extension root object
 const Me = imports.misc.extensionUtils.getCurrentExtension();
+const schema = "org.gnome.shell.extensions.services-panel";
+const Lib = Me.imports.lib;
+const MenuItems = Me.imports.menu_items;
+
 
 // aliases for used modules
 const St = imports.gi.St;
@@ -8,8 +12,6 @@ const Lang = imports.lang;
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
-const GLib = imports.gi.GLib;
-const Util = imports.misc.util;
 
 // StatusIcon manager
 let panel_icon = 'services-panel-icon';
@@ -32,19 +34,19 @@ const Indicator = new Lang.Class({
      * @this {Indicator}
      * @param {string} icon an icon name
      */
-    _init: function(icon) {
+    _init: function(menu) {
 
         this.parent(0.0, 'Services Panel');
 
         statusIcon = new St.Icon({
-            icon_name: icon,
+            icon_name: '',
             style_class: panel_icon
         });
 
         this.actor.add_actor(statusIcon);
 
         //this._settings = Convenience.getSettings();
-        this._createMenu();
+        this._createMenu(menu);
     },
 
     /**
@@ -53,10 +55,18 @@ const Indicator = new Lang.Class({
      * @private
      * @this {Indicator}
      */
-    _createMenu: function() {
-        menuItemApache = new PopupMenu.PopupSwitchMenuItem("Web Server", isApacheActive());
-        this.menu.addMenuItem(menuItemApache);
-        menuItemApache.statusAreaKey = "Web Server";
+    _createMenu: function(menu) {
+        
+        let items = menu.getEnableItems();
+        //Main.notify(items);
+	for (itemIndex in items)
+	{
+            let item = items[itemIndex];
+            menuItem = new PopupMenu.PopupSwitchMenuItem(item['label'], isServiceActive(item['cmd']));
+            this.menu.addMenuItem(menuItem);
+            menuItem.statusAreaKey = item['label'];
+           // menuItem.connect('toggled', toggleService(item['cmd']));
+	}        
     },
 
 });
@@ -66,17 +76,24 @@ const Indicator = new Lang.Class({
  * Extension definition.
  */
 
-function Extension() {
-    this._init();
+function Extension(schema) {
+    this._init(schema);
 }
 
 Extension.prototype = {
-    _init: function() {
+    
+    settings: null,
+    menuItems: null,    
+    
+    _init: function(schema) {
         this._indicator = null;
+        let settings = new Lib.Settings(schema);
+        this.settings = settings.getSettings();
+	this.menuItems = new MenuItems.MenuItems(this.settings);
     },
 
     enable: function() {
-        this._indicator = new Indicator('');
+        this._indicator = new Indicator(this.menuItems);
         Main.panel.addToStatusArea('Services Panel', this._indicator);
     },
 
@@ -100,12 +117,17 @@ Extension.prototype = {
 //Useful for creating settings
 
 
-function init() {
-    return new Extension();
+function init(schema) {
+    return new Extension(schema);
 }
 
 
 
-function isApacheActive() {
+function isServiceActive(name) {
     return "active";
+}
+
+function toggleService(name) {
+    //Main.notify("Restarting" + name);
+
 }

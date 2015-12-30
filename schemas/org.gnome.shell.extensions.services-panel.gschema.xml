@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="gnome-shell-extensions-services-panel">
+  <schema path="/org/gnome/shell/extensions/services-panel/" id="org.gnome.shell.extensions.services-panel">
+    <key name="label-menu" type="s">
+      <default>'Services panel'</default>
+      <summary>Label Menu</summary>
+      <description/>
+    </key>
+    <key name="items" type="s">
+      <default>'Httpd;gnome-tweak-tool.desktop;1;gnome-tweak-tool|MariaDD;dconf-editor.desktop;1;dconf-editor'</default>
+      <summary>Items</summary>
+      <description/>
+    </key>
+  </schema>
+</schemalist>

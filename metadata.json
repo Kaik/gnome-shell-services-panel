@@ -6,6 +6,7 @@
     "3.18"
   ],
   "url": "",
+  "settings-schema": "org.gnome.shell.extensions.services-panel", 
   "uuid": "services-panel@kaikmedia.com",
   "version": 0.1
 }
